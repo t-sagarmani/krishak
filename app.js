@@ -18,65 +18,67 @@ const Products = require('./models/productModel');
 const Transactions = require('./models/transactionModel');
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/users/me', auth, function (req, res) {
+app.use(require('body-parser').json())
+
+app.get('/users/me', auth, function(req, res) {
     res.send(req.user);
 })
-app.post("/login", async function (req, res) {
+app.post("/login", async function(req, res) {
 
     const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
     const token = await user.generateAuthToken();
     res.send({ success: true, token: token, usertype: user.usertype });
 })
-app.post("/register", async function (req, res) {
+app.post("/register", async function(req, res) {
     var myData = new Users(req.body);
     console.log(myData)
-    myData.save().then( ()=>  {
-        proceedToken(req,res);
+    myData.save().then(() => {
+        proceedToken(req, res);
 
-    }).catch(function (e) {
+    }).catch(function(e) {
         res.send(false)
     })
-    
-});
-async function proceedToken(req,res){
 
-    try{
-    const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
-    const token = await user.generateAuthToken();
-    res.send({ token })
-    }catch(erro){
+});
+async function proceedToken(req, res) {
+
+    try {
+        const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
+        const token = await user.generateAuthToken();
+        res.send({ token })
+    } catch (erro) {
         res.send(erro);
         console.log(erro)
     }
 }
 
-app.get('/alluser', function (req, res) {
-  
-    Users.find().then(function (alluser) {
+app.get('/alluser', function(req, res) {
+
+    Users.find().then(function(alluser) {
         res.send(alluser);
-        }).catch(function () {
+    }).catch(function() {
         console.log('errot');
     })
 
 });
-app.post('/addmyproduct',function(req,res){
-      
+app.post('/addmyproduct', function(req, res) {
+
     var myProductData = new Products(req.body);
     console.log(myProductData)
-    myProductData.save().then( ()=>  {
+    myProductData.save().then(() => {
         res.send(myProductData);
-    }).catch(function (e) {
+    }).catch(function(e) {
         res.send(false)
     })
 });
-app.get('/productslist',function(req,res){
-      
-    Products.find().then(function (prductlist) {
+app.get('/productslist', function(req, res) {
+
+    Products.find().then(function(prductlist) {
         res.send(prductlist);
-        }).catch(function () {
-        console.log('errot');
+    }).catch(function() {
+        console.log('error');
     })
 })
 
@@ -86,18 +88,16 @@ app.get('/productslist',function(req,res){
 
 
 
-var storage = multer.diskStorage(
-    {
-        destination: "images",
-        filename: (req, file, callback) => {
-            let ext = path.extname(file.originalname);
-            callback(null, file.fieldname + "-" + Date.now() + ext);
-        }
-    });
+var storage = multer.diskStorage({
+    destination: "images",
+    filename: (req, file, callback) => {
+        let ext = path.extname(file.originalname);
+        callback(null, file.fieldname + "-" + Date.now() + ext);
+    }
+});
 
 var imageFileFilter = (req, file, cb) => {
-    if
-        (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) { return cb(newError("You can upload only image files!"), false); }
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) { return cb(newError("You can upload only image files!"), false); }
     cb(null, true);
 };
 
@@ -113,3 +113,4 @@ app.post('/upload', upload.single('upload'), (req, res) => {
 })
 
 app.listen(90);
+module.exports = app;
