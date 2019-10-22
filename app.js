@@ -15,6 +15,7 @@ const auth = require('./middleware/auth');
 app.use(cors());
 const middleware = require('./middleware/middleware');
 const Products = require('./models/productModel');
+// const Category = require('./models/categoryModel');
 const Transactions = require('./models/transactionModel');
 
 
@@ -32,53 +33,71 @@ app.post("/login", async function (req, res) {
 app.post("/register", async function (req, res) {
     var myData = new Users(req.body);
     console.log(myData)
-    myData.save().then( ()=>  {
-        proceedToken(req,res);
+    myData.save().then(() => {
+        proceedToken(req, res);
 
     }).catch(function (e) {
         res.send(false)
     })
-    
-});
-async function proceedToken(req,res){
 
-    try{
-    const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
-    const token = await user.generateAuthToken();
-    res.send({ token })
-    }catch(erro){
+});
+async function proceedToken(req, res) {
+
+    try {
+        const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
+        const token = await user.generateAuthToken();
+        res.send({ token })
+    } catch (erro) {
         res.send(erro);
         console.log(erro)
     }
 }
 
 app.get('/alluser', function (req, res) {
-  
+
     Users.find().then(function (alluser) {
         res.send(alluser);
-        }).catch(function () {
+    }).catch(function () {
         console.log('errot');
     })
 
 });
-app.post('/addmyproduct',function(req,res){
-      
+app.post('/addmyproduct', function (req, res) {
+
     var myProductData = new Products(req.body);
     console.log(myProductData)
-    myProductData.save().then( ()=>  {
+    myProductData.save().then(() => {
         res.send(myProductData);
     }).catch(function (e) {
         res.send(false)
     })
 });
-app.get('/productslist',function(req,res){
-      
+app.get('/productslist', function (req, res) {
+
     Products.find().then(function (prductlist) {
         res.send(prductlist);
-        }).catch(function () {
+    }).catch(function () {
         console.log('errot');
     })
 })
+
+app.get('/filterlist/:tagId', function (req, res) {
+
+    Products.find({ "productCategory": req.params.tagId }).then(function (prductlist) {
+        res.send(prductlist);
+    }).catch(function () {
+        console.log('errot');
+    })
+})
+
+// app.get('/categories',function(req,res){
+
+//     Products.find({"productCategory":}).then(function (catlist) {
+//         res.send(catlist);
+//         }).catch(function () {
+//         console.log('error');
+//     })
+// })
 
 
 

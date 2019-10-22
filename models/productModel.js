@@ -21,9 +21,6 @@ const productModel = mongoose.model('Products', {
     discount: {
         type:String
     },
-    quantity:{
-        type:String
-    },
     availableLocation:{
         type:String
     },
