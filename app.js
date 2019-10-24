@@ -15,7 +15,8 @@ const auth = require('./middleware/auth');
 app.use(cors());
 const middleware = require('./middleware/middleware');
 const Products = require('./models/productModel');
-const Transactions = require('./models/transactionModel');
+// const Category = require('./models/categoryModel');
+// const Transactions = require('./models/transactionModel');
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -80,10 +81,15 @@ app.post('/addmyproduct', function(req, res) {
         res.send(false)
     })
 });
+
 app.get('/productslist', function(req, res) {
 
     Products.find().then(function(prductlist) {
-        res.send(prductlist);
+        res.json([
+            {
+                data:prductlist
+            }
+        ]);
     }).catch(function() {
         console.log('error');
     })
@@ -109,7 +115,8 @@ var upload = multer({
         fileSize: 10000000
     }
 });
-app.post('/upload', upload.single('upload'), (req, res) => {
+app.post('/upload', upload.single('image'), (req, res) => {
+    console.log(req.file.filename);
     res.send({ Filename: req.file.filename });
 })
 

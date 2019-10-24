@@ -30,9 +30,9 @@ const productModel = mongoose.model('Products', {
     manufacturedLocation: {
         type: String
     },
-    quantity: {
-        type: String
-    },
+    // quantity: {
+    //     type: String
+    // },
     productExpireData: {
         type: String
     },
