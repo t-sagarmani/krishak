@@ -10,6 +10,7 @@ app.use(express.static('./images'))
 app.use(express.json());
 const path = require('path');
 const cors = require('cors');
+var fs = require('fs');
 const jwt = require('jsonwebtoken');
 const auth = require('./middleware/auth');
 app.use(cors());
@@ -18,12 +19,15 @@ const Products = require('./models/productModel');
 const Category = require('./models/categoryModel');
 const Transactions = require('./models/transactionModel');
 
+// var db = require('../DB/mongoos');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/users/me', auth, function(req, res) {
     res.send(req.user);
 })
+
+app.use('/images', express.static('images'));
 
 app.post("/login", async function(req, res) {
 console.log(req.body)
@@ -149,12 +153,6 @@ app.get('/cart/:tagId', function (req, res) {
     })
 })
 
-
-
-
-
-
-
 var storage = multer.diskStorage(
     {
         destination: "images",
@@ -166,7 +164,7 @@ var storage = multer.diskStorage(
 
 
 var imageFileFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) { return cb(newError("You can upload only image files!"), false); }
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) { return cb(newError("You can upload only image files!"), false); }
     cb(null, true);
 };
 
@@ -180,6 +178,28 @@ var upload = multer({
 app.post('/upload', upload.single('image'), (req, res) => {
     console.log(req.file.filename);
     res.send({ Filename: req.file.filename });
+})
+
+app.delete('/delete', (req, res) => {
+    var id = req.body.id;
+    var imageName = req.body.image;
+    console.log(req.body)
+    console.log(imageName)
+    fs.unlink('./images/' + imageName, function(err) {
+        if (err) {
+            return console.log(err)
+        } else {
+            console.log('old image removed')
+        }
+    })
+
+    Products.deleteOne({ _id: id }).then(function () {
+        res.send(true);
+    }).catch(function () {
+        console.log('error');
+    })
+
+
 })
 
 app.listen(90);
