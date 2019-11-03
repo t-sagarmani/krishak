@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
+const categoryModel = mongoose.model('Category', {
 
-const categoryModel = mongoose.model('Products', {
-
-    productCategory:{
+    name:{
         type:String
     },
 });

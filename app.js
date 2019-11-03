@@ -15,7 +15,7 @@ const auth = require('./middleware/auth');
 app.use(cors());
 const middleware = require('./middleware/middleware');
 const Products = require('./models/productModel');
-// const Category = require('./models/categoryModel');
+const Category = require('./models/categoryModel');
 const Transactions = require('./models/transactionModel');
 
 
@@ -72,6 +72,7 @@ app.post('/addmyproduct', function (req, res) {
         res.send(false)
     })
 });
+
 app.get('/productslist', function (req, res) {
 
     Products.find().then(function (prductlist) {
@@ -90,14 +91,34 @@ app.get('/filterlist/:tagId', function (req, res) {
     })
 })
 
-// app.get('/categories',function(req,res){
+app.post('/addcategory', function (req, res) {
 
-//     Products.find({"productCategory":}).then(function (catlist) {
-//         res.send(catlist);
-//         }).catch(function () {
-//         console.log('error');
-//     })
-// })
+    var myCatData = new Category(req.body);
+    console.log(myCatData)
+    myCatData.save().then(() => {
+        res.send(myCatData);
+    }).catch(function (e) {
+        res.send(false)
+    })
+});
+
+app.get('/categories', function (req, res) {
+
+    Category.find().then(function (prductlist) {
+        res.send(prductlist);
+    }).catch(function () {
+        console.log('errot');
+    })
+})
+
+app.get('/cart/:tagId', function (req, res) {
+
+    Products.find({ _id: req.params.tagId }).then(function (cartlist) {
+        res.send(cartlist);
+    }).catch(function () {
+        console.log('error');
+    })
+})
 
 
 
