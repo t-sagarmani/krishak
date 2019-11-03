@@ -33,7 +33,7 @@ console.log(req.body)
     if(token===null){
         res.send({ success: false});
     }else{
-        res.send({ success: true, token: token, usertype: user.usertype });
+        res.send({ success: true, token: token, userid: user._id });
     }
 })
 
@@ -72,11 +72,26 @@ app.get('/alluser', function(req, res) {
 });
 app.post('/addmyproduct', function(req, res) {
 
-    var myProductData = new Products(req.body);
-    console.log(req.body)
-    myProductData.save().then(() => {
-        // res.send(myProductData);
-        res.send(true)
+    var myProductData = new Products({
+        productName: req.body.productName,
+        productCategory: req.body.productCategory,
+        pricePerUnit: req.body.pricePerUnit,
+        description: req.body.description,
+        image: req.body.image,
+        discount: req.body.discount,
+        quantity: req.body.quantity,
+        availableLocation: req.body.availableLocation,
+        manufacturedLocation: req.body.manufacturedLocation,
+        productExpireData: req.body.productExpireData,
+        uploadedBy: req.body.uploadedBy,
+    });
+    console.log(myProductData)
+
+    myProductData.save().then((datalist) => {
+       
+        console.log("new dataaa see herev ")
+       
+        
     }).catch(function(e) {
         res.send(false)
     })
@@ -110,6 +125,15 @@ app.post('/addcategory', function (req, res) {
 app.get('/categories', function (req, res) {
 
     Category.find().then(function (prductlist) {
+        res.send(prductlist);
+    }).catch(function () {
+        console.log('errot');
+    })
+})
+
+app.get('/filterlist/:tagId', function (req, res) {
+
+    Products.find({ "productCategory": req.params.tagId }).then(function (prductlist) {
         res.send(prductlist);
     }).catch(function () {
         console.log('errot');
