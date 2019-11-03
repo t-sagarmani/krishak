@@ -6,31 +6,34 @@ const productModel = mongoose.model('Products', {
     productName: {
         type: String
     },
-    productCategory:{
-        type:String
+    productCategory: {
+        type: String
     },
-    pricePerUnit:{
-        type:String
+    pricePerUnit: {
+        type: String
     },
-    description:{
-        type:String
-    }, 
+    description: {
+        type: String
+    },
     image: {
         type: String
     },
     discount: {
-        type:String
+        type: String
     },
-    availableLocation:{
-        type:String
+    quantity: {
+        type: String
     },
-    manufacturedLocation:{
-        type:String
+    availableLocation: {
+        type: String
     },
-    quantity:{
-        type:String
+    manufacturedLocation: {
+        type: String
     },
-    productExpireData:{
+    // quantity: {
+    //     type: String
+    // },
+    productExpireData: {
         type: String
     },
     uploadedBy: {
