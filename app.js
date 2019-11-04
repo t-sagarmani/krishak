@@ -23,31 +23,31 @@ const Transactions = require('./models/transactionModel');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/users/me', auth, function(req, res) {
+app.get('/users/me', auth, function (req, res) {
     res.send(req.user);
 })
 
 app.use('/images', express.static('images'));
 
-app.post("/login", async function(req, res) {
-console.log(req.body)
+app.post("/login", async function (req, res) {
+    console.log(req.body)
     const user = await Users.checkCrediantialsDb(req.body.username, req.body.password);
     const token = await user.generateAuthToken();
     // console.log('li'+token)
-    if(token===null){
-        res.send({ success: false});
-    }else{
+    if (token === null) {
+        res.send({ success: false });
+    } else {
         res.send({ success: true, token: token, userid: user._id });
     }
 })
 
-app.post("/register", async function(req, res) {
+app.post("/register", async function (req, res) {
     console.log(req.body)
     var myData = new Users(req.body);
     myData.save().then(() => {
         proceedToken(req, res);
 
-    }).catch(function(e) {
+    }).catch(function (e) {
         res.send(false)
     })
 
@@ -65,16 +65,16 @@ async function proceedToken(req, res) {
     }
 }
 
-app.get('/alluser', function(req, res) {
+app.get('/alluser', function (req, res) {
 
-    Users.find().then(function(alluser) {
+    Users.find().then(function (alluser) {
         res.send(alluser);
-    }).catch(function() {
+    }).catch(function () {
         console.log('errot');
     })
 
 });
-app.post('/addmyproduct', function(req, res) {
+app.post('/addmyproduct', function (req, res) {
 
     var myProductData = new Products({
         productName: req.body.productName,
@@ -92,25 +92,25 @@ app.post('/addmyproduct', function(req, res) {
     console.log(myProductData)
 
     myProductData.save().then((datalist) => {
-       
-        console.log("new dataaa see herev ")
-       
-        
-    }).catch(function(e) {
+
+        res.send(true)
+
+
+    }).catch(function (e) {
         res.send(false)
     })
 });
 
 
-app.get('/productslist', function(req, res) {
+app.get('/productslist', function (req, res) {
 
-    Products.find().then(function(prductlist) {
+    Products.find().then(function (prductlist) {
         res.json([
             {
-                data:prductlist
+                data: prductlist
             }
         ]);
-    }).catch(function() {
+    }).catch(function () {
         console.log('error');
     })
 })
@@ -185,7 +185,7 @@ app.delete('/delete', (req, res) => {
     var imageName = req.body.image;
     console.log(req.body)
     console.log(imageName)
-    fs.unlink('./images/' + imageName, function(err) {
+    fs.unlink('./images/' + imageName, function (err) {
         if (err) {
             return console.log(err)
         } else {
