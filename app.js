@@ -116,8 +116,8 @@ app.get('/productslist', function (req, res) {
 })
 
 app.post('/addcategory', function (req, res) {
-
-    var myCatData = new Category(req.body);
+    console.log(req.body.productCategory)
+    var myCatData = new Category({ name: req.body.productCategory });
     console.log(myCatData)
     myCatData.save().then(() => {
         res.send(myCatData);
